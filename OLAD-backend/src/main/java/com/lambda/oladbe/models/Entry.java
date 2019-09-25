@@ -1,6 +1,7 @@
 package com.lambda.oladbe.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.lang.String;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class Entry extends Auditable
     private long entryid;
 
     @Column(nullable = false)
-    private Date entrydate;
+    private String entrydate;
 
     private String text;
 
@@ -27,7 +28,7 @@ public class Entry extends Auditable
 
     public Entry() { }
 
-    public Entry(Date entrydate, String text, User user)
+    public Entry(String entrydate, String text, User user)
     {
         this.entrydate = entrydate;
         this.text = text;
@@ -42,9 +43,9 @@ public class Entry extends Auditable
         this.entryid = entryid;
     }
 
-    public Date getEntrydate() { return entrydate; }
+    public String getEntrydate() { return entrydate; }
 
-    public void setEntrydate(Date entrydate) { this.entrydate = entrydate; }
+    public void setEntrydate(String entrydate) { this.entrydate = entrydate; }
 
     public String getText() { return text; }
 

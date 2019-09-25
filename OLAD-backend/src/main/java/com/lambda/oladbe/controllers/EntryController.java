@@ -46,23 +46,12 @@ public class EntryController
     }
 
 
-    // TESTER ROUTE
-//    // GET http://localhost:2019/entries
-//    @ApiOperation(value = "returns all user entries", response = Entry.class, responseContainer = "List")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200, message = "Entries Found", response = Entry.class),
-//            @ApiResponse(code = 204, message = "Server found no content", response = Entry.class),
-//            @ApiResponse(code = 404, message = "Entries Not Found", response = ErrorDetail.class)})
-//    @GetMapping(value = "/entries", produces = {"application/json"})
-//    public ResponseEntity<?> listAllEntries()
-//    {
-//        List<Entry> myEntries = entryService.findAllEntries(Pageable.unpaged());
-//        return new ResponseEntity<>(myEntries, HttpStatus.OK);
-//    }
 
-
-    // GET http://localhost:2019/entries/date/{date}
+    // GET http://localhost:2019/entries/date/25-09-2019
     @ApiOperation(value = "returns all user entries by date", response = Entry.class, responseContainer = "List")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", dataType = "integer", paramType = "query", value = "Results page number"),
+    })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Entries Found", response = Entry.class),
             @ApiResponse(code = 204, message = "Server found no content", response = Entry.class),

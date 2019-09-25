@@ -12,7 +12,7 @@ public interface EntryService
 
     List<Entry> findAllByEntrydate(String entrydate);
 
-    List<Entry> findAllByMonthAndDay(Pageable pageable, Date entrydate);
+    List<Entry> findAllByMonthAndDay(Pageable pageable, String entrydate);
 
     Entry findEntryById(long id);
 

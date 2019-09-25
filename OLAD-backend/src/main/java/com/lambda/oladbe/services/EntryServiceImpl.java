@@ -12,10 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Service(value = "entryService")
 public class EntryServiceImpl implements EntryService
@@ -41,32 +41,31 @@ public class EntryServiceImpl implements EntryService
     @Override
     public List<Entry> findAllByEntrydate(String entrydate)
     {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUserName = userRepository.findByUsername(authentication.getName());
-
         // create empty array to fill with all users entries
         List<Entry> list = new ArrayList<>();
         entryRepository.findAll().iterator().forEachRemaining(list::add);
 
-        // parse date into month and year variables
+        // parse query param date into day, month variables
+        String[] arr = entrydate.split("-", 3);
+        String day = arr[0];
+        String month = arr[1];
 
-        System.out.println("DATE__**___" + entrydate);
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
-//        Date dateObj = sdf.parse(entrydate);
-//        System.out.println("dateObj" + dateObj);
-
-        // filter to only have entries with date matching a given month
-        // filter to only have entries with date matching a given day
-
-//        list.stream().filter((entry) -> entry.getEntrydate() == entrydate);
-
-
-
-        return list;
+        // create another empty arr and add entries that match date and month
+        List<Entry> outputList = new ArrayList<>();
+        for (Entry e : list) {
+            String[] eStrArr = e.getEntrydate().split("-", 3);
+            String d = eStrArr[0];
+            String m = eStrArr[1];
+            if (d.equals(day) && m.equals(month)) {
+                outputList.add(e);
+            }
+        }
+        return outputList;
     }
 
+
     @Override
-    public List<Entry> findAllByMonthAndDay(Pageable pageable, Date entrydate)
+    public List<Entry> findAllByMonthAndDay(Pageable pageable, String entrydate)
     {
 
         return null;
@@ -86,13 +85,15 @@ public class EntryServiceImpl implements EntryService
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userRepository.findByUsername(authentication.getName());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String strDate = dateFormat.format(date);
 
         if (currentUser != null)
         {
             Entry newEntry = new Entry();
             newEntry.setText(entry.getText());
-            newEntry.setEntrydate(new Date());
+            newEntry.setEntrydate(strDate);
             newEntry.setUser(currentUser);
             return entryRepository.save(newEntry);
         } else
@@ -110,7 +111,10 @@ public class EntryServiceImpl implements EntryService
         {
             newEntry.setText(entry.getText());
         }
-
+        if (entry.getEntrydate() != null)
+        {
+            newEntry.setEntrydate(entry.getEntrydate());
+        }
         return entryRepository.save(newEntry);
     }
 
