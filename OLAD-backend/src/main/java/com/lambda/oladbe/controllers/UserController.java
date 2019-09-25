@@ -30,136 +30,119 @@ public class UserController
     private UserService userService;
 
 
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
-//    @GetMapping(value = "/users",
-//                produces = {"application/json"})
-//    public ResponseEntity<?> listAllUsers(HttpServletRequest request)
+    // GET https://olad-backend.herokuapp.com/users/users - list all users
+    @GetMapping(value = "/users",
+                produces = {"application/json"})
+    public ResponseEntity<?> listAllUsers(HttpServletRequest request)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        List<User> myUsers = userService.findAll();
+        return new ResponseEntity<>(myUsers, HttpStatus.OK);
+    }
+
+
+    // GET https://olad-backend.herokuapp.com/users/user/2 - get user by id
+    @GetMapping(value = "/user/{userId}",
+                produces = {"application/json"})
+    public ResponseEntity<?> getUserById(HttpServletRequest request,
+                                         @PathVariable Long userId)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+        User u = userService.findUserById(userId);
+        return new ResponseEntity<>(u, HttpStatus.OK);
+    }
+
+
+    // GET https://olad-backend.herokuapp.com/users/user/name/Johnny - get user by name
+    @GetMapping(value = "/user/name/{userName}",
+                produces = {"application/json"})
+    public ResponseEntity<?> getUserByName(HttpServletRequest request,
+                                           @PathVariable String userName)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+        User u = userService.findByName(userName);
+        return new ResponseEntity<>(u, HttpStatus.OK);
+    }
+
+    // GET https://olad-backend.herokuapp.com/users/getusername - gets username from authentication header
+    @GetMapping(value = "/getusername", produces = {"application/json"})
+    @ResponseBody
+    public ResponseEntity<?> getCurrentUserName(HttpServletRequest request, Authentication authentication)
+    {
+        logger.info(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        return new ResponseEntity<>(authentication.getPrincipal(), HttpStatus.OK);
+    }
+//    EXAMPLE OF RETURNED DATA from /users/getusername
 //    {
-//        logger.trace(request.getMethod()
-//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-//
-//        List<User> myUsers = userService.findAll();
-//        return new ResponseEntity<>(myUsers, HttpStatus.OK);
+//        "password": null,
+//            "username": "Johnny",
+//            "authorities": [
+//        {
+//            "authority": "ROLE_USER"
+//        }
+//    ],
+//        "accountNonExpired": true,
+//            "accountNonLocked": true,
+//            "credentialsNonExpired": true,
+//            "enabled": true
 //    }
 
 
 
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
-//    @GetMapping(value = "/user/{userId}",
-//                produces = {"application/json"})
-//    public ResponseEntity<?> getUserById(HttpServletRequest request,
-//                                         @PathVariable Long userId)
-//    {
-//        logger.trace(request.getMethod()
-//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-//        User u = userService.findUserById(userId);
-//        return new ResponseEntity<>(u, HttpStatus.OK);
-//    }
+    // PUT https://olad-backend.herokuapp.com/users/user/2 - update user's username, email
+     @PutMapping(value = "/user/{id}")
+    public ResponseEntity<?> updateUser(HttpServletRequest request,
+                                        @RequestBody User updateUser,
+                                        @PathVariable long id)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
 
+        userService.update(updateUser, id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
-//    @GetMapping(value = "/user/name/{userName}",
-//                produces = {"application/json"})
-//    public ResponseEntity<?> getUserByName(HttpServletRequest request,
-//                                           @PathVariable String userName)
-//    {
-//        logger.trace(request.getMethod()
-//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-//        User u = userService.findByName(userName);
-//        return new ResponseEntity<>(u, HttpStatus.OK);
-//    }
+    // POST https://olad-backend.herokuapp.com/users/createnewuser - adds a new user
+    @PostMapping(value = "/createnewuser",
+                 consumes = {"application/json"},
+                 produces = {"application/json"})
+    public ResponseEntity<?> addNewUser(HttpServletRequest request, @Valid
+        @RequestBody User newuser) throws URISyntaxException
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+        newuser = userService.save(newuser);
 
+        // set the location header for the newly created resource
+        HttpHeaders responseHeaders = new HttpHeaders();
+        URI newUserURI = ServletUriComponentsBuilder.fromCurrentRequest()
+                                                    .path("/{userid}")
+                                                    .buildAndExpand(newuser.getUserid())
+                                                    .toUri();
+        responseHeaders.setLocation(newUserURI);
 
-//    @GetMapping(value = "/getusername", produces = {"application/json"})
-//    @ResponseBody
-//    public ResponseEntity<?> getCurrentUserName(HttpServletRequest request, Authentication authentication)
-//    {
-//        logger.trace(request.getMethod()
-//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-//
-//        return new ResponseEntity<>(authentication.getPrincipal(), HttpStatus.OK);
-//    }
-
-
-//    @PutMapping(value = "/user/{id}")
-//    public ResponseEntity<?> updateUser(HttpServletRequest request,
-//                                        @RequestBody User updateUser,
-//                                        @PathVariable long id)
-//    {
-//        logger.trace(request.getMethod()
-//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-//
-//        userService.update(updateUser, id, request.isUserInRole("ADMIN"));
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
-//    @PostMapping(value = "/user",
-//                 consumes = {"application/json"},
-//                 produces = {"application/json"})
-//    public ResponseEntity<?> addNewUser(HttpServletRequest request, @Valid
-//    @RequestBody User newuser) throws URISyntaxException
-//    {
-//        logger.trace(request.getMethod()
-//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-//        newuser = userService.save(newuser);
-//
-//        // set the location header for the newly created resource
-//        HttpHeaders responseHeaders = new HttpHeaders();
-//        URI newUserURI = ServletUriComponentsBuilder.fromCurrentRequest()
-//                                                    .path("/{userid}")
-//                                                    .buildAndExpand(newuser.getUserid())
-//                                                    .toUri();
-//        responseHeaders.setLocation(newUserURI);
-//
-//        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
-//    }
+        return new ResponseEntity<>(null, responseHeaders, HttpStatus.CREATED);
+    }
 
 
 
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
-//    @DeleteMapping("/user/{id}")
-//    public ResponseEntity<?> deleteUserById(HttpServletRequest request,
-//                                            @PathVariable long id)
-//    {
-//        logger.trace(request.getMethod()
-//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-//
-//        userService.delete(id);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    // DELETE https://olad-backend.herokuapp.com/users/user/2
+    @DeleteMapping("/user/{userid}")
+    public ResponseEntity<?> deleteUserRoleByIds(HttpServletRequest request,
+                                                 @PathVariable long userid)
+    {
+        logger.trace(request.getMethod()
+                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
+
+        userService.deleteUser(userid);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
-
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-//    @DeleteMapping("/user/{userid}/role/{roleid}")
-//    public ResponseEntity<?> deleteUserRoleByIds(HttpServletRequest request,
-//                                                 @PathVariable long userid,
-//                                                 @PathVariable long roleid)
-//    {
-//        logger.trace(request.getMethod()
-//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-//
-//        userService.deleteUserRole(userid, roleid);
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-
-
-
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
-//    @PostMapping("/user/{userid}/role/{roleid}")
-//    public ResponseEntity<?> postUserRoleByIds(HttpServletRequest request,
-//                                               @PathVariable long userid,
-//                                               @PathVariable long roleid)
-//    {
-//        logger.trace(request.getMethod()
-//                            .toUpperCase() + " " + request.getRequestURI() + " accessed");
-//
-//        userService.addUserRole(userid, roleid);
-//
-//        return new ResponseEntity<>(HttpStatus.CREATED);
-//    }
 }

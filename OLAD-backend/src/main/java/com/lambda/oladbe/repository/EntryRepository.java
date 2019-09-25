@@ -10,4 +10,7 @@ public interface EntryRepository extends PagingAndSortingRepository<Entry, Long>
 
 //    List<Entry> findEntriesByEntrydate_MonthAndEntrydate_Day(Pageable pageable);
 //    Entry findAllByEntrydate(Pageable pageable);
+
+//    Entry findEntriesByEntrydate(Pageable pageable);
+
 }

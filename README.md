@@ -1,30 +1,14 @@
-# java-bookstore
-
+# One Line A Day Backend
 ## Introduction
 
-This is a bookstore with books who have authors and can be found in a section of the store.
-
-## Instructions
-
-The provided initial application has the basics in place for
-* User Oauth2 Authentication
-* Exception Handling
-* Swagger
-* Logging 
-* Unit / Integration testing (at least the POM file entries)
-* Deployment to Heroku
-* Conversion to Postgresql
-
-Starting with this initial application: https://github.com/LambdaSchool/java-starthere.git 
-
-Create a REST API server to store and read data from a PostgreSQL Database. The table layouts should be
+This is an online journal with a user having the capability to add a short journal entry and can be shown their daily entries by a certain day going back 10 years.
 
 * book
   * bookid - long primary key
   * booktitle - String the title of the book
   * ISBN - String the ISBN number of the book
   * copy - Int the year the book was published (copyright date)
-  
+
 * authors
   * authorid - long primary key
   * lastname - String last name of the author
@@ -36,7 +20,7 @@ There is a many to many relationship between authors and books. A book may have 
 
 * data.sql contains sample data to test your application. It is ok that on the initial load of the data, the audit fields are null.
 
-* You bookstore endpoints should have customized Swagger documentation. 
+* You bookstore endpoints should have customized Swagger documentation.
 
 * Appropriate Exception handling should be in place for each bookstore endpoint
 
@@ -45,7 +29,7 @@ There is a many to many relationship between authors and books. A book may have 
 * List the data
 
   * GET /books - returns a JSON object list of all the books and their authors.
-  
+
   * GET /authors - returns a JSON object list of all the authors and their books.
 
 * Manage the data
@@ -55,7 +39,7 @@ There is a many to many relationship between authors and books. A book may have 
   * POST /data/books/{bookid}/authors/{authorid} - assigns a book already in the system (bookid) to an author already in the system (authorid) (see how roles are handled for users)
 
   * DELETE /data/books/{id} - deletes a book and the book author combinations - but does not delete the author records.
- 
+
 Your system will have authentication in place. The following are the roles you need to handle:
 
 * User - people who can look up books, authors

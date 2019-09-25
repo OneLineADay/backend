@@ -57,6 +57,6 @@ public class Entry extends Auditable
     @Override
     public String toString()
     {
-        return "Userentry{" + "entryid=" + entryid + ", text=" + text + ", user=" + user.getUsername() + '}';
+        return "Userentry{" + "entryid=" + entryid + ", text=" + text + ", date=" + entrydate + "user=" + user.getUsername() + '}';
     }
 }

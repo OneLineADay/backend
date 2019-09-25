@@ -60,6 +60,7 @@ public class DataSourceConfig {
             myDBUser = System.getenv("MYDBUSER");
             myDBPassword = System.getenv("MYDBPASSWORD");
             System.out.println("MYDBUSER____" + myDBUser);
+            System.out.println("MYDUrlString____" + myUrlString);
         } else {
             // Assumes H2
             myUrlString = "jdbc:h2:mem:testdb";

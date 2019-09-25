@@ -20,10 +20,15 @@ public class Swagger2Config
     @Bean
     public Docket api()
     {
-        return new Docket(DocumentationType.SWAGGER_2).select()
-                //                .apis(RequestHandlerSelectors.any())
-                .apis(RequestHandlerSelectors.basePackage("com.lambdaschool.starthere")).paths(PathSelectors.any()).build().useDefaultResponseMessages(false) // Allows only my exception responses
-                .ignoredParameterTypes(Pageable.class) // allows only my paging parameter list
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors
+                        .basePackage("com.lambda.oladbe"))
+                .paths(PathSelectors.regex("/.*"))
+                //.paths(PathSelectors.any())  shows all possible links
+                .build()
+                .useDefaultResponseMessages(false)
+                .ignoredParameterTypes(Pageable.class)
                 .apiInfo(apiEndPointsInfo());
     }
 

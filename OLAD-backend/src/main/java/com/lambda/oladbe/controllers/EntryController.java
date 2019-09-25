@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -31,48 +32,64 @@ public class EntryController
     private EntryService entryService;
 
     // GET http://localhost:2019/entries/?page=0&size=3
-//    @ApiOperation(value = "returns all entries", response = Entry.class, responseContainer = "List")
-//    @ApiImplicitParams({@ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
-//            value = "Results page number"), @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query",
-//            value = "Number of records per page"), @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "integer", paramType = "query",
-//            value = "Sorting criteria in the format: property(asc|desc)" + "Default sort order is ascending " + "Multiple sort criteria are supported)")})
-//    @GetMapping(value = "/entries/", produces = {"application/json"})
-//    public ResponseEntity<?> listAll(@PageableDefault(page = 0, size = 10) Pageable pageable)
-//    {
-//        List<Entry> myEntries = entryService.findAll(pageable);
-//        return new ResponseEntity<>(myEntries, HttpStatus.OK);
-//    }
+    @ApiOperation(value = "returns all entries", response = Entry.class, responseContainer = "List")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query", value = "Results page number"),
+            @ApiImplicitParam(name = "size", dataType = "integer", paramType = "query", value = "Number of records per page"),
+            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "integer", paramType = "query",
+            value = "Sorting criteria in the format: property(,asc|desc)" + "Default sort order is ascending " + "Multiple sort criteria are supported)")})
+    @GetMapping(value = "/entries", produces = {"application/json"})
+    public ResponseEntity<?> listAll(@PageableDefault(page = 0, size = 10) Pageable pageable)
+    {
+        List<Entry> myEntries = entryService.findAllEntries(pageable);
+        return new ResponseEntity<>(myEntries, HttpStatus.OK);
+    }
 
-    // GET http://localhost:2019/entries
+
+    // TESTER ROUTE
+//    // GET http://localhost:2019/entries
 //    @ApiOperation(value = "returns all user entries", response = Entry.class, responseContainer = "List")
-//    @ApiResponses(
-//            value = {@ApiResponse(code = 200, message = "Entries Found", response = Entry.class), @ApiResponse(code = 204,
-//                    message = "Server found no content", response = Entry.class), @ApiResponse(code = 404,
-//                    message = "Entries Not Found", response = ErrorDetail.class)})
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Entries Found", response = Entry.class),
+//            @ApiResponse(code = 204, message = "Server found no content", response = Entry.class),
+//            @ApiResponse(code = 404, message = "Entries Not Found", response = ErrorDetail.class)})
 //    @GetMapping(value = "/entries", produces = {"application/json"})
 //    public ResponseEntity<?> listAllEntries()
 //    {
-//        List<Entry> myEntries = entryService.findAll(Pageable.unpaged());
+//        List<Entry> myEntries = entryService.findAllEntries(Pageable.unpaged());
 //        return new ResponseEntity<>(myEntries, HttpStatus.OK);
 //    }
 
 
-    //    // PUT localhost:2019/entries/{id}
-    //    @ApiOperation(value = "returns entry by given id", response = Entry.class, responseContainer = "List")
-    //    @ApiResponses(value = {
-    //            @ApiResponse(code = 200, message = "Entry Found", response = Entry.class),
-    //            @ApiResponse(code = 204, message = "Server found no content", response = Entry.class),
-    //            @ApiResponse(code = 404, message = "Entry Not Found", response = ErrorDetail.class)
-    //    })
-    //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    //    @PutMapping(value = "/data/entries/{id}")
-    //    public ResponseEntity<?> getEntryById(
-    //            @ApiParam(value = "Entry Id", required = true, example = "1")
-    //            @PathVariable long id) {
-    //        entryService.findById(id);
-    //        return new ResponseEntity<>(HttpStatus.OK);
-    //    }
+    // GET http://localhost:2019/entries/date/{date}
+    @ApiOperation(value = "returns all user entries by date", response = Entry.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Entries Found", response = Entry.class),
+            @ApiResponse(code = 204, message = "Server found no content", response = Entry.class),
+            @ApiResponse(code = 404, message = "Entries Not Found", response = ErrorDetail.class)})
+    @GetMapping(value = "/entries/date/{date}", produces = {"application/json"})
+        public ResponseEntity<?> listAllEntriesByDate(@PathVariable String date)
+        {
+            List<Entry> myEntriesByDate = entryService.findAllByEntrydate(date);
+            return new ResponseEntity<>(myEntriesByDate, HttpStatus.OK);
+        }
+
+
+
+    // GET localhost:2019/entry/{id}
+    @ApiOperation(value = "returns entry by given id", response = Entry.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Entry Found", response = Entry.class),
+            @ApiResponse(code = 204, message = "No content found on server", response = Entry.class),
+            @ApiResponse(code = 404, message = "Entry Not Found", response = ErrorDetail.class)
+    })
+    @GetMapping(value = "/entry/{id}", produces = {"application/json"})
+    public ResponseEntity<?> getEntryById(
+            @ApiParam(value = "Entry Id", required = true, example = "1")
+            @PathVariable long id) {
+        entryService.findEntryById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
     // POST localhost:2019/entry - save a new entry
@@ -80,7 +97,6 @@ public class EntryController
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Entry created successfully", response = void.class),
             @ApiResponse(code = 500, message = "Error creating Entry", response = ErrorDetail.class)})
-    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping(value = "/entry", consumes = {"application/json"})
     public ResponseEntity<?> addNewEntry(@Valid @RequestBody Entry newEntry) throws URISyntaxException
     {
@@ -95,28 +111,27 @@ public class EntryController
     }
 
 
-    // PUT localhost:2019/data/entry/{id} - update entry text
+    // PUT localhost:2019/entry/{entryid} - update entry text
     @ApiOperation(value = "updates entry by given id", response = Entry.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Entry Found", response = Entry.class),
             @ApiResponse(code = 204, message = "Server found no content", response = Entry.class),
             @ApiResponse(code = 404, message = "Entry Not Found", response = ErrorDetail.class)})
-    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PutMapping(value = "/entry/{id}")
     public ResponseEntity<?> updateEntry(
-            @RequestBody Entry updateEntry,
+            @RequestBody Entry updatedEntry,
             @ApiParam(value = "Entry Id", required = true, example = "1")
             @PathVariable long id)
     {
-        entryService.update(updateEntry, id);
+        entryService.update(updatedEntry, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     // DELETE localhost:2019/entry/{id}
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Entry Deleted", response = Entry.class),
             @ApiResponse(code = 404, message = "Entry Not Found", response = ErrorDetail.class)})
-    @PreAuthorize("hasAuthority('ROLE_USER')")
     @DeleteMapping("/entry/{id}")
     public ResponseEntity<?> deleteEntryById(
             @ApiParam(value = "Author Id", required = true, example = "1") @PathVariable long id)

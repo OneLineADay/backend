@@ -8,9 +8,13 @@ import java.util.List;
 
 public interface EntryService
 {
-    List<Entry> findAll(Pageable pageable);
+    List<Entry> findAllEntries(Pageable pageable);
 
-    List <Entry> findAllByEntrydate(Date entrydate);
+    List<Entry> findAllByEntrydate(String entrydate);
+
+    List<Entry> findAllByMonthAndDay(Pageable pageable, Date entrydate);
+
+    Entry findEntryById(long id);
 
     Entry save(Entry entry);
 

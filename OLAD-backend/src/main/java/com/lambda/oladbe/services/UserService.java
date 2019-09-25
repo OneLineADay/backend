@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserService
 {
-    UserDetails loadUserByUsername(String username);
+//    UserDetails loadUserByUsername(String username);
 
     List<User> findAll();
 
@@ -15,13 +15,10 @@ public interface UserService
 
     User findByName(String name);
 
-    void delete(long id);
-
     User save(User user);
 
     User update(User user, long id);
 
-    void deleteUserRole(long userid, long roleid);
+    void deleteUser(long id);
 
-    void addUserRole(long userid, long roleid);
 }
