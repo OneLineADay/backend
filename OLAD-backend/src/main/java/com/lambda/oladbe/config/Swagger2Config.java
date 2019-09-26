@@ -1,8 +1,15 @@
 package com.lambda.oladbe.config;
 
+import com.fasterxml.classmate.TypeResolver;
+import com.lambda.oladbe.models.APIOpenLibrary;
+import com.lambda.oladbe.models.TokenModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -15,21 +22,25 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 // http://localhost:2019/swagger-ui.html
 @Configuration
 @EnableSwagger2
+@Import(BeanValidatorPluginsConfiguration.class)
 public class Swagger2Config
 {
+    @Autowired
+    private TypeResolver resolver;
+
     @Bean
     public Docket api()
     {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors
-                        .basePackage("com.lambda.oladbe"))
-                .paths(PathSelectors.regex("/.*"))
+        return new Docket(DocumentationType.SWAGGER_2).select()
+                .apis(RequestHandlerSelectors.basePackage("com.lambda.oladbe"))
+                .paths(PathSelectors.any())
                 //.paths(PathSelectors.any())  shows all possible links
                 .build()
-                .useDefaultResponseMessages(false)
-                .ignoredParameterTypes(Pageable.class)
-                .apiInfo(apiEndPointsInfo());
+                .useDefaultResponseMessages(false) // Allows only my exception responses
+                .ignoredParameterTypes(Pageable.class) // allows only my paging parameter list
+                .apiInfo(apiEndPointsInfo())
+                .pathMapping("/")
+                .additionalModels(resolver.resolve(APIOpenLibrary.class), resolver.resolve(TokenModel.class)).ignoredParameterTypes(SimpleGrantedAuthority.class);
     }
 
     private ApiInfo apiEndPointsInfo()

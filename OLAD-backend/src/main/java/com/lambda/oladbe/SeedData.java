@@ -50,6 +50,7 @@ public class SeedData implements CommandLineRunner
         ArrayList<UserRoles> users = new ArrayList<>();
         users.add(new UserRoles(new User(), role));
         User u1 = new User("Johnny", "Lambda", "Johnny@email.com", users, entries);
+
         u1.getUserentries().add(new Entry("22-09-2019", "Today was a good day.", u1));
         u1.getUserentries().add(new Entry("22-09-2018", "I ate a sandwich.", u1));
         u1.getUserentries().add(new Entry("22-09-2017", "I talked to my mom today.", u1));

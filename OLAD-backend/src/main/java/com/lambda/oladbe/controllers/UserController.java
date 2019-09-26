@@ -109,7 +109,7 @@ public class UserController
     }
 
     // POST https://olad-backend.herokuapp.com/users/createnewuser - adds a new user
-    @PostMapping(value = "/createnewuser",
+    @PostMapping(value = "/user",
                  consumes = {"application/json"},
                  produces = {"application/json"})
     public ResponseEntity<?> addNewUser(HttpServletRequest request, @Valid

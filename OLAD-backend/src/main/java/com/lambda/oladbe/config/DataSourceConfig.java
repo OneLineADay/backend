@@ -24,15 +24,15 @@ public class DataSourceConfig {
     @Autowired
     private ApplicationContext appContext;
 
+    @Autowired
+    private Environment env;
+
     private static void checkEnvironmentVariable(String envvar) {
         if (System.getenv(envvar) == null) {
             logger.error("Environment Variable " + envvar + " missing");
             stop = true;
         }
     }
-
-    @Autowired
-    private Environment env;
 
     @Bean(name = "dsCustom")
     public DataSource dataSource() {
@@ -59,15 +59,15 @@ public class DataSourceConfig {
             myDriverClass = "org.postgresql.Driver";
             myDBUser = System.getenv("MYDBUSER");
             myDBPassword = System.getenv("MYDBPASSWORD");
-            System.out.println("MYDBUSER____" + myDBUser);
-            System.out.println("MYDUrlString____" + myUrlString);
+//            System.out.println("MYDBUSER____" + myDBUser);
+//            System.out.println("MYDUrlString____" + myUrlString);
         } else {
             // Assumes H2
             myUrlString = "jdbc:h2:mem:testdb";
             myDriverClass = "org.h2.Driver";
             myDBUser = "sa";
             myDBPassword = "";
-            System.out.println("H2 MYDBUSER____" + myDBUser);
+//            System.out.println("H2 MYDBUSER____" + myDBUser);
         }
 
         logger.info("Database URL is " + myUrlString);
