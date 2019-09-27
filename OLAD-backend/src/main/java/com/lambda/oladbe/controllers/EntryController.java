@@ -11,17 +11,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -75,10 +70,11 @@ public class EntryController
     @GetMapping(value = "/entry/{id}", produces = {"application/json"})
     public ResponseEntity<?> getEntryById(
             @ApiParam(value = "Entry Id", required = true, example = "1")
-            @PathVariable long id) {
-        entryService.findEntryById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+            @PathVariable long id)
+        {
+            Entry singleEntry = entryService.findEntryById(id);
+            return new ResponseEntity<>(singleEntry, HttpStatus.OK);
+        }
 
 
     // POST localhost:2019/entry - save a new entry

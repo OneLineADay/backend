@@ -42,7 +42,7 @@ public class OpenController
                  consumes = {"application/json"},
                  produces = {"application/json"})
     public ResponseEntity<?> addNewUser(HttpServletRequest httpServletRequest,
-                                        @RequestParam(defaultValue = "false")
+                                        @RequestParam(defaultValue = "true")
                                                 boolean getaccess,
                                         @Valid
                                             @RequestBody UserMinimum newminuser) throws URISyntaxException

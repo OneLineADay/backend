@@ -108,7 +108,7 @@ public class UserController
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // POST https://olad-backend.herokuapp.com/users/createnewuser - adds a new user
+    // POST https://olad-backend.herokuapp.com/users/user - adds a new user
     @PostMapping(value = "/user",
                  consumes = {"application/json"},
                  produces = {"application/json"})
